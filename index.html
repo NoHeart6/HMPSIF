@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMPSIF - Himpunan Mahasiswa Teknik Informatika</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mario-sky: #7BCCFF;
+            --mario-ground: #E7AA57;
+            --mario-brick: #D87F33;
+            --mario-question: #E39E24;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background-color: var(--mario-sky);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .pixel-border {
+            border: 4px solid #000;
+            box-shadow: 0 0 0 4px #fff, 0 0 0 8px #000;
+        }
+
+        .top-container {
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--mario-sky);
+        }
+
+        .cloud-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .cloud {
+            position: absolute;
+            width: 200px;
+            height: 60px;
+            background: #fff;
+            border-radius: 50px;
+            animation: moveCloud linear infinite;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        .cloud::before {
+            width: 100px;
+            height: 100px;
+            top: -50px;
+            left: 10px;
+        }
+
+        .cloud::after {
+            width: 120px;
+            height: 120px;
+            top: -70px;
+            right: 15px;
+        }
+
+        @keyframes moveCloud {
+            0% { left: -200px; }
+            100% { left: 100%; }
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease;
+            height: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .slide {
+            flex: 0 0 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .slide-content:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h2 {
+            margin-bottom: 1rem;
+            color: #333;
+            text-shadow: 2px 2px #fff;
+        }
+
+        h1 {
+            font-size: 3rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+        }
+
+        p {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--mario-question);
+            color: #000;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #fff;
+            transform: scale(1.1);
+        }
+
+        .nav-dots {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 16px;
+            height: 16px;
+            background-color: #fff;
+            margin: 0 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot:hover {
+            transform: scale(1.2);
+        }
+
+        .nav-dot.active {
+            background-color: var(--mario-question);
+        }
+
+        .bottom-container {
+            padding: 4rem 0;
+            background-color: var(--mario-ground);
+        }
+
+        .division {
+            margin-bottom: 4rem;
+            padding: 2rem;
+            background-color: var(--mario-brick);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .division:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .division-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .division-text {
+            flex: 1;
+            min-width: 300px;
+            z-index: 2;
+        }
+
+        .division-image {
+            flex: 0 0 200px;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            margin-left: 2rem;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .division-image:hover {
+            transform: scale(1.1);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .gallery-item {
+            background-color: var(--mario-brick);
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--mario-ground);
+            background-image: 
+                linear-gradient(
+                    var(--mario-ground) 50%, 
+                    var(--mario-brick) 50%
+                );
+            background-size: 20px 20px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 0.8rem;
+            }
+
+            .division-content {
+                flex-direction: column;
+            }
+
+            .division-image {
+                margin-left: 0;
+                margin-top: 1rem;
+                width: 100%;
+            }
+        }
+
+        .trail {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--mario-question);
+            pointer-events: none;
+            animation: trail 0.5s linear;
+        }
+
+        @keyframes trail {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-container">
+        <div class="cloud-container">
+            <div class="cloud" style="top: 20%; animation-duration: 35s;"></div>
+            <div class="cloud" style="top: 40%; animation-duration: 45s;"></div>
+            <div class="cloud" style="top: 60%; animation-duration: 30s;"></div>
+        </div>
+        <div class="slider">
+            <div class="slide">
+                <div class="slide-content pixel-border">
+                    <h1>HMPSIF</h1>
+                    <p>Himpunan Mahasiswa Teknik Informatika</p>
+                    <a href="#divisions" class="btn pixel-border">Jelajahi Divisi</a>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="slide-content pixel-border">
+                    <h1>Tentang Kami</h1>
+                    <p>Wadah aspirasi dan pengembangan potensi mahasiswa Teknik Informatika dalam dunia digital.</p>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="slide-content pixel-border">
+                    <h1>Visi & Misi</h1>
+                    <p>Mewujudkan mahasiswa Teknik Informatika yang unggul dan siap menghadapi era digital.</p>
+                </div>
+            </div>
+        </div>
+        <div class="nav-dots"></div>
+        <div class="ground"></div>
+    </div>
+
+    <div class="bottom-container" id="divisions">
+        <div class="container">
+            <div class="division pixel-border">
+                <div class="division-content">
+                    <div class="division-text">
+                        <h2>Divisi BPH</h2>
+                        <p>Badan Pengurus Harian yang bertanggung jawab atas koordinasi dan manajemen keseluruhan organisasi.</p>
+                    </div>
+                    <div class="division-image pixel-border" style="background-image: url('https://source.unsplash.com/random/400x400?leadership');"></div>
+                </div>
+            </div>
+
+            <div class="division pixel-border">
+                <div class="division-content">
+                    <div class="division-text">
+                        <h2>Divisi Internal</h2>
+                        <p>Mengelola kegiatan internal dan memastikan kesejahteraan anggota HMPSIF.</p>
+                    </div>
+                    <div class="division-image pixel-border" style="background-image: url('https://source.unsplash.com/random/400x400?teamwork');"></div>
+                </div>
+            </div>
+
+            <div class="division pixel-border">
+                <div class="division-content">
+                    <div class="division-text">
+                        <h2>Divisi Eksternal</h2>
+                        <p>Bertanggung jawab atas hubungan dan kerjasama dengan pihak luar organisasi.</p>
+                    </div>
+                    <div class="division-image pixel-border" style="background-image: url('https://source.unsplash.com/random/400x400?networking');"></div>
+                </div>
+            </div>
+
+            <div class="division pixel-border">
+                <div class="division-content">
+                    <div class="division-text">
+                        <h2>Divisi Kominfo</h2>
+                        <p>Mengelola komunikasi dan informasi organisasi, termasuk media sosial dan website.</p>
+                    </div>
+                    <div class="division-image pixel-border" style="background-image: url('https://source.unsplash.com/random/400x400?communication');"></div>
+                </div>
+            </div>
+
+            <div class="division pixel-border">
+                <div class="division-content">
+                    <div class="division-text">
+                        <h2>Divisi Minat Bakat</h2>
+                        <p>Mengembangkan dan memfasilitasi minat dan bakat mahasiswa Teknik Informatika.</p>
+                    </div>
+                    <div class="division-image pixel-border" style="background-image: url('https://source.unsplash.com/random/400x400?talent');"></div>
+                </div>
+            </div>
+
+            <h2>Program Kerja</h2>
+            <div class="gallery">
+                <div class="gallery-item pixel-border">
+                    <img src="https://source.unsplash.com/random/400x400?computer,training" alt="PELDAKOM" class="pixel-border">
+                    <h3>PELDAKOM</h3>
+                    <p>Pelatihan Dasar Komputer</p>
+                </div>
+                <div class="gallery-item pixel-border">
+                    <img src="https://source.unsplash.com/random/400x400?festival,technology" alt="IKMATIF Fest" class="pixel-border">
+                    <h3>IKMATIF Fest</h3>
+                    <p>Festival Teknologi Informatika</p>
+                </div>
+                <div class="gallery-item pixel-border">
+                    <img src="https://source.unsplash.com/random/400x400?sharing,knowledge" alt="Share IT" class="pixel-border">
+                    <h3>Share IT</h3>
+                    <p>Berbagi Pengetahuan IT</p>
+                </div>
+                <div class="gallery-item pixel-border">
+                    <img src="https://source.unsplash.com/random/400x400?coding,workshop" alt="Pelatihan IT" class="pixel-border">
+                    <h3>Pelatihan IT</h3>
+                    <p>Workshop Teknologi Terkini</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slider = document.querySelector('.slider');
+        const slides = document.querySelectorAll('.slide');
+        const navDots = document.querySelector('.nav-dots');
+        let currentSlide = 0;
+
+        // Create navigation dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('nav-dot', 'pixel-border');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(index));
+            navDots.appendChild(dot);
+        });
+
+               function goToSlide(n) {
+            slider.style.transform = `translateX(-${n * 100}%)`;
+            currentSlide = n;
+            updateDots();
+        }
+
+        function updateDots() {
+            document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Auto-slide with pause on hover
+        let slideInterval = setInterval(nextSlide, 5000);
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            goToSlide(currentSlide);
+        }
+
+        slider.addEventListener('mouseenter', () => {
+            clearInterval(slideInterval);
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            slideInterval = setInterval(nextSlide, 5000);
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Parallax effect for division images
+        window.addEventListener('scroll', () => {
+            const divisions = document.querySelectorAll('.division');
+            divisions.forEach(division => {
+                const distance = window.scrollY - division.offsetTop;
+                const image = division.querySelector('.division-image');
+                image.style.transform = `translateY(${distance * 0.1}px)`;
+            });
+        });
+
+        // Interactive gallery with zoom and tilt effect
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        galleryItems.forEach(item => {
+            item.addEventListener('mousemove', (e) => {
+                const { left, top, width, height } = item.getBoundingClientRect();
+                const x = (e.clientX - left) / width;
+                const y = (e.clientY - top) / height;
+                
+                const tiltX = (y - 0.5) * 10;
+                const tiltY = (x - 0.5) * -10;
+                
+                item.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.05)`;
+            });
+
+            item.addEventListener('mouseleave', () => {
+                item.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+            });
+        });
+
+        // Create moving clouds
+        function createCloud() {
+            const cloud = document.createElement('div');
+            cloud.classList.add('cloud');
+            cloud.style.top = `${Math.random() * 60}%`;
+            cloud.style.animationDuration = `${Math.random() * 20 + 30}s`;
+            document.querySelector('.cloud-container').appendChild(cloud);
+
+            cloud.addEventListener('animationend', () => {
+                cloud.remove();
+                createCloud();
+            });
+        }
+
+        for (let i = 0; i < 3; i++) {
+            createCloud();
+        }
+
+        // Interactive elements on hover with pixel effect
+        const interactiveElements = document.querySelectorAll('.btn, .division, .gallery-item');
+
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseover', () => {
+                element.style.transition = 'all 0.1s ease';
+                element.style.transform = 'scale(1.05)';
+                element.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.2)';
+                pixelateElement(element);
+            });
+
+            element.addEventListener('mouseout', () => {
+                element.style.transition = 'all 0.3s ease';
+                element.style.transform = 'scale(1)';
+                element.style.boxShadow = 'none';
+                unpixelateElement(element);
+            });
+        });
+
+        function pixelateElement(element) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const pixelSize = 5;
+
+            canvas.width = element.offsetWidth;
+            canvas.height = element.offsetHeight;
+
+            ctx.drawImage(element, 0, 0, canvas.width, canvas.height);
+
+            for (let y = 0; y < canvas.height; y += pixelSize) {
+                for (let x = 0; x < canvas.width; x += pixelSize) {
+                    const pixelData = ctx.getImageData(x, y, 1, 1).data;
+                    ctx.fillStyle = `rgb(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]})`;
+                    ctx.fillRect(x, y, pixelSize, pixelSize);
+                }
+            }
+
+            element.style.backgroundImage = `url(${canvas.toDataURL()})`;
+        }
+
+        function unpixelateElement(element) {
+            element.style.backgroundImage = '';
+        }
+
+        // Typing effect for slide content
+        function typeWriter(element, text, i = 0) {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(() => typeWriter(element, text, i), 50);
+            }
+        }
+
+        slides.forEach(slide => {
+            const content = slide.querySelector('p');
+            const text = content.textContent;
+            content.textContent = '';
+            typeWriter(content, text);
+        });
+
+        // Easter egg: Konami Code
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    activateEasterEgg();
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+
+        function activateEasterEgg() {
+            alert('Easter Egg Activated: You found the secret code!');
+            document.body.style.transform = 'rotate(180deg)';
+            setTimeout(() => {
+                document.body.style.transform = '';
+            }, 3000);
+        }
+
+        // Lazy loading for images
+        const images = document.querySelectorAll('img');
+        const options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
+        }, options);
+
+        images.forEach(img => {
+            img.classList.add('lazy');
+            img.dataset.src = img.src;
+            img.src = '';
+            imageObserver.observe(img);
+        });
+
+        // Add a fun cursor trail effect
+        function createTrail(e) {
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.style.left = e.pageX + 'px';
+            trail.style.top = e.pageY + 'px';
+            document.body.appendChild(trail);
+
+            setTimeout(() => {
+                trail.remove();
+            }, 500);
+        }
+
+        document.addEventListener('mousemove', createTrail);
+    </script>
+</body>
+</html>
